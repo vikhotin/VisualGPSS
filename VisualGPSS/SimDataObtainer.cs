@@ -50,6 +50,19 @@ namespace VisualGPSS
         public static /**/void/**/ GetSimData()
         {
             IntPtr dataptr = GetSimulationDataArray(simInfoHandle);
+            int elementSize = Marshal.SizeOf(typeof(IntPtr));
+            for (int i = 0; i < 14; i++) // TODO: добавить число блоков
+            {
+                IntPtr rowptr = Marshal.ReadIntPtr(dataptr, i * elementSize);
+                for (int j = 0; j < 4; j++)
+                {
+                    IntPtr strptr = Marshal.ReadIntPtr(rowptr, j * elementSize);
+                    string str = Marshal.PtrToStringAuto(strptr, 24).TrimEnd('\0');
+                    str = str.Substring(0, str.IndexOf('\0'));
+                    // TODO: сохранять строки в структуру
+                }
+            }
+            // TODO: а может быть, брать только нужную информацию?
         }
     }
 }
