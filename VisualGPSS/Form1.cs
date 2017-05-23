@@ -16,7 +16,7 @@ namespace VisualGPSS
         {
             InitializeComponent();
             string error = "";
-            if (!SimDataObtainer.Connect(ref error))
+            if (!SimDataObtainer.Init(ref error))
             {
                 MessageBox.Show(error);
                 Text = "False";
