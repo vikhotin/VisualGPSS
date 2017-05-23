@@ -26,6 +26,11 @@ extern "C" HWND __declspec(dllexport) __stdcall FindSimDataLV(HWND blocks)
 	return listview;
 }
 
+extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
+{
+	return (int)SendMessage(listview, LVM_GETITEMCOUNT, 0, 0);
+}
+
 extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(const HWND listview)
 {
 	const int STR_MAX_SIZE = 24;
@@ -88,9 +93,8 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	return table;
 }
 
-extern "C" void __declspec(dllexport) __stdcall ClearData(HWND listview, wchar_t*** table)
+extern "C" void __declspec(dllexport) __stdcall ClearData(wchar_t*** table, int count)
 {
-	int count = (int)SendMessage(listview, LVM_GETITEMCOUNT, 0, 0);
 	Free3DArray(table, count, 4);
 }
 
