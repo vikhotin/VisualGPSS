@@ -12,18 +12,31 @@ namespace VisualGPSS
 {
     public partial class Form1 : Form
     {
+        private ModelForm modelForm;
+        private VisualModel model = new VisualModel();
+        private Renderer renderer;
+
         public Form1()
         {
             InitializeComponent();
+            renderer = new Renderer(model);
+            modelForm = new ModelForm(renderer);
+        }
+
+        private void showToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             string error = "";
             if (!SimDataObtainer.Init(ref error))
             {
                 MessageBox.Show(error);
-                Text = "False";
             }
             else
-                Text = "True";
-            SimDataObtainer.GetSimData();
+            {
+                GpssBlockData[] gpssBlocks = SimDataObtainer.GetSimData();
+                model.blocks = GpssToVisualConverter.Convert(gpssBlocks);
+                modelForm.Show(this);
+                //modelForm.Invalidate();
+            }
         }
     }
 }

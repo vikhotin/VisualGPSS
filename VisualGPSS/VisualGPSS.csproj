@@ -53,9 +53,25 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="GpssBlockData.cs" />
+    <Compile Include="GpssToVisualConverter.cs" />
+    <Compile Include="ModelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ModelForm.Designer.cs">
+      <DependentUpon>ModelForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderer.cs" />
     <Compile Include="SimDataObtainer.cs" />
+    <Compile Include="VisualBlock.cs" />
+    <Compile Include="VisualModel.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ModelForm.resx">
+      <DependentUpon>ModelForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

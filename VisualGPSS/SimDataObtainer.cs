@@ -67,7 +67,7 @@ namespace VisualGPSS
             return true;
         }
 
-        public static /**/void/**/ GetSimData()
+        public static GpssBlockData[] GetSimData()
         {
             IntPtr dataptr = GetSimulationDataArray(simInfoHandle);
             int elementSize = Marshal.SizeOf(typeof(IntPtr));
@@ -84,6 +84,8 @@ namespace VisualGPSS
                 }
             }
             ClearData(dataptr, blocksCount);
+
+            return SimData;
         }
         // TODO: а может быть, брать только нужную информацию?
     }
