@@ -14,16 +14,24 @@ namespace VisualGPSS
 
         public List<VisualBlock> Links { get; private set; }
 
+        private Bitmap TaskImage;
+
         public VisualBlock()
         {
             Links = new List<VisualBlock>();
+            TaskImage = new Bitmap(10, 10);
+            using (Graphics graphics = Graphics.FromImage(TaskImage))
+            {
+                graphics.DrawImage(Properties.Resources.task, 0, 0, 10, 10);
+            }
         }
 
         public virtual void Draw(Graphics g)
         {
             Pen pb = new Pen(Color.Blue, 2);
-            g.DrawEllipse(pb, Location.X - 5, Location.Y - 5, 10, 10);
+            g.DrawEllipse(pb, Location.X - 3, Location.Y - 3, 6, 6);
             DrawLinks(g);
+            DrawTasks(g);
         }
 
         protected void DrawLinks(Graphics g)
@@ -41,14 +49,35 @@ namespace VisualGPSS
                 }
             }
         }
+
+        protected void DrawTasks(Graphics g)
+        {
+            if (TaskCount > 0)
+            {
+                g.DrawImageUnscaled(TaskImage, new Point(Location.X + 20, Location.Y - 5));
+                g.DrawString(TaskCount.ToString(), new Font(FontFamily.GenericSansSerif, 10),
+                             Brushes.Black, Location.X + 30, Location.Y - 10);
+            }
+        }
     }
 
     class GeneratorBlock : VisualBlock
     {
         public override void Draw(Graphics g)
         {
-            // TODO
-            base.Draw(g);
+            Pen pb = new Pen(Color.Blue, 2);
+            g.DrawPolygon(pb, new Point[] {
+                new Point(Location.X - 5, Location.Y - 10),
+                new Point(Location.X - 5, Location.Y - 5),
+                new Point(Location.X - 2, Location.Y - 5),
+                new Point(Location.X - 2, Location.Y),
+                new Point(Location.X + 2, Location.Y),
+                new Point(Location.X + 2, Location.Y - 5),
+                new Point(Location.X + 5, Location.Y - 5),
+                new Point(Location.X + 5, Location.Y - 10),
+            });
+            DrawLinks(g);
+            DrawTasks(g);
         }
     }
 
@@ -56,8 +85,18 @@ namespace VisualGPSS
     {
         public override void Draw(Graphics g)
         {
-            // TODO
-            base.Draw(g);
+            Pen pb = new Pen(Color.Blue, 2);
+            g.DrawLine(pb, new Point(Location.X - 5, Location.Y - 10), 
+                           new Point(Location.X - 5, Location.Y - 5));
+            g.DrawLine(pb, new Point(Location.X + 5, Location.Y - 10),
+                           new Point(Location.X + 5, Location.Y - 5));
+            g.DrawRectangles(pb, new Rectangle[] {
+                new Rectangle(Location.X - 5, Location.Y - 5, 10, 5),
+                new Rectangle(Location.X - 5, Location.Y, 10, 5),
+                new Rectangle(Location.X - 5, Location.Y + 5, 10, 5),
+            });
+            DrawLinks(g);
+            DrawTasks(g);
         }
     }
 
@@ -65,8 +104,14 @@ namespace VisualGPSS
     {
         public override void Draw(Graphics g)
         {
-            // TODO
-            base.Draw(g);
+            Pen pb = new Pen(Color.Blue, 2);
+            g.DrawRectangles(pb, new Rectangle[] {
+                new Rectangle(Location.X - 6, Location.Y - 6, 10, 10),
+                new Rectangle(Location.X - 5, Location.Y - 5, 10, 10),
+                new Rectangle(Location.X - 4, Location.Y - 4, 10, 10),
+            });
+            DrawLinks(g);
+            DrawTasks(g);
         }
     }
 
@@ -74,8 +119,15 @@ namespace VisualGPSS
     {
         public override void Draw(Graphics g)
         {
-            // TODO
-            base.Draw(g);
+            Pen pb = new Pen(Color.Blue, 2);
+            g.DrawRectangles(pb, new Rectangle[] {
+                new Rectangle(Location.X - 10, Location.Y - 5, 5, 10),
+                new Rectangle(Location.X - 5, Location.Y - 5, 5, 10),
+                new Rectangle(Location.X    , Location.Y - 5, 5, 10),
+                new Rectangle(Location.X + 5, Location.Y - 5, 5, 10),
+            });
+            DrawLinks(g);
+            DrawTasks(g);
         }
     }
 

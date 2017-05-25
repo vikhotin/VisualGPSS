@@ -21,6 +21,7 @@ namespace VisualGPSS
             InitializeComponent();
             renderer = new Renderer(model);
             modelForm = new ModelForm(renderer);
+            //modelForm.Location = new Point(Location.X, Location.Y + Height);
         }
 
         private void showToolStripMenuItem_Click(object sender, EventArgs e)
