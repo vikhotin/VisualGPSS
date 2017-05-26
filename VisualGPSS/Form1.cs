@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace VisualGPSS
@@ -22,6 +15,8 @@ namespace VisualGPSS
             renderer = new Renderer(model);
             modelForm = new ModelForm(renderer);
             //modelForm.Location = new Point(Location.X, Location.Y + Height);
+            timer1.Tick += new EventHandler(RunFrame);
+            timer1.Enabled = false;
         }
 
         private void showToolStripMenuItem_Click(object sender, EventArgs e)
@@ -37,7 +32,16 @@ namespace VisualGPSS
                 model.blocks = GpssToVisualConverter.Convert(gpssBlocks);
                 modelForm.Show(this);
                 //modelForm.Invalidate();
+
+                timer1.Enabled = true;
             }
+        }
+
+        private void RunFrame(object sender, EventArgs e)
+        {
+            GpssBlockData[] gpssBlocks = SimDataObtainer.GetSimData();
+            model.blocks = GpssToVisualConverter.Convert(gpssBlocks);
+            modelForm.Invalidate();
         }
     }
 }

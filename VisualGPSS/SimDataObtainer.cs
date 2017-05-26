@@ -78,7 +78,7 @@ namespace VisualGPSS
                 for (int j = 0; j < 4; j++)
                 {
                     IntPtr strptr = Marshal.ReadIntPtr(rowptr, j * elementSize);
-                    string str = Marshal.PtrToStringAuto(strptr, 24).TrimEnd('\0');
+                    string str = Marshal.PtrToStringAuto(strptr, 24); //.TrimEnd('\0');
                     str = str.Substring(0, str.IndexOf('\0'));
                     SimData[i]._data[j] = str;
                 }
