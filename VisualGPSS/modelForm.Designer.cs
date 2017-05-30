@@ -28,21 +28,32 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 1;
             // 
             // ModelForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(424, 401);
             this.DoubleBuffered = true;
             this.Name = "ModelForm";
             this.Text = "modelForm";
+            this.ResizeBegin += new System.EventHandler(this.ModelForm_ResizeBegin);
+            this.ResizeEnd += new System.EventHandler(this.ModelForm_ResizeEnd);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ModelForm_Paint);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Timer timer1;
     }
 }

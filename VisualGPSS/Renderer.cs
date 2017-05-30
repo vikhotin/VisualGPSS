@@ -13,10 +13,11 @@ namespace VisualGPSS
 
         public void Render(Graphics g)
         {
-            foreach (VisualBlock block in model.blocks)
-            {
-                block.Draw(g);
-            }
+            if (model.blocks != null)
+                foreach (VisualBlock block in model.blocks)
+                {
+                    block.Draw(g);
+                }
         }
     }
 }

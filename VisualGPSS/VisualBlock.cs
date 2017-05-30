@@ -1,16 +1,17 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace VisualGPSS
 {
-    public class VisualBlock
+    public class VisualBlock : Control
     {
         public int Id { get; set; }
 
         public string Label { get; set; }
         public int TaskCount { get; set; }
 
-        public Point Location { get; set; }
+        // public Point Location { get; set; }
 
         public List<VisualBlock> Links { get; private set; }
 
@@ -24,6 +25,12 @@ namespace VisualGPSS
             {
                 graphics.DrawImage(Properties.Resources.task, 0, 0, 10, 10);
             }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            // base.OnPaint(e);
+            Draw(e.Graphics);
         }
 
         public virtual void Draw(Graphics g)

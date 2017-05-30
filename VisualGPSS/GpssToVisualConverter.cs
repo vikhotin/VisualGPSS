@@ -106,5 +106,14 @@ namespace VisualGPSS
 
             return res;
         }
+
+        public static void UpdateStats(VisualBlock[] blocks, GpssBlockData[] newInfo)
+        {
+            if (blocks != null)
+                for (int i = 0; i < blocks.Length; i++)
+                {
+                    blocks[i].TaskCount = newInfo[i].CurrentCount;
+                }
+        }
     }
 }
