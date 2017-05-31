@@ -43,7 +43,7 @@ extern "C" HWND __declspec(dllexport) __stdcall FindSourceCodeRE(HWND gpss, HWND
 
 extern "C" int __declspec(dllexport) __stdcall GetSourceCodeLength(HWND richedit)
 {
-	return SendMessage(richedit, WM_GETTEXTLENGTH, 0, 0);
+	return (int)SendMessage(richedit, WM_GETTEXTLENGTH, 0, 0);
 }
 
 extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
@@ -51,10 +51,11 @@ extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
 	return (int)SendMessage(listview, LVM_GETITEMCOUNT, 0, 0);
 }
 
-extern "C" __declspec(dllexport) char*  __stdcall GetSourceCode(HWND richedit, int csLength)
+extern "C" __declspec(dllexport) wchar_t*  __stdcall GetSourceCode(HWND richedit, int csLength)
 {
-	char* res = new char[csLength];
-	SendMessage(richedit, WM_GETTEXT, csLength, (LPARAM)res);
+	csLength += 1; // null tereminated widestring
+	wchar_t* res = new wchar_t[csLength];
+	int sz = SendMessage(richedit, WM_GETTEXT, csLength, (LPARAM)res);
 	return res;
 }
 
