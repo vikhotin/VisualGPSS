@@ -15,6 +15,9 @@ namespace VisualGPSS
         public static extern IntPtr FindSimDataLV(IntPtr blocks);
 
         [DllImport("DataObtainerLib.dll", SetLastError = true)]
+        public static extern IntPtr FindSourceCodeRE(IntPtr gpss, IntPtr blocks);
+
+        [DllImport("DataObtainerLib.dll", SetLastError = true)]
         public static extern int GetListviewCount(IntPtr listview);
 
         [DllImport("DataObtainerLib.dll", SetLastError = true)]
@@ -26,6 +29,7 @@ namespace VisualGPSS
         private static IntPtr gpssHandle;
         private static IntPtr blocksHandle;
         private static IntPtr simInfoHandle;
+        private static IntPtr sourceCodeHandle;
 
         private static int blocksCount;
 
@@ -59,6 +63,12 @@ namespace VisualGPSS
             }
             simInfoHandle = FindSimDataLV(blocksHandle);
             if (simInfoHandle.Equals(IntPtr.Zero))
+            {
+                error = "Unknown error";
+                return false;
+            }
+            sourceCodeHandle = FindSourceCodeRE(gpssHandle, blocksHandle);
+            if (sourceCodeHandle.Equals(IntPtr.Zero))
             {
                 error = "Unknown error";
                 return false;

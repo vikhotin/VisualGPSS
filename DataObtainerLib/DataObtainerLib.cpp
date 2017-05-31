@@ -26,6 +26,21 @@ extern "C" HWND __declspec(dllexport) __stdcall FindSimDataLV(HWND blocks)
 	return listview;
 }
 
+extern "C" HWND __declspec(dllexport) __stdcall FindSourceCodeRE(HWND gpss, HWND blocks)
+{
+	LPWSTR title = new WCHAR[100];
+	GetWindowText(blocks, title, 100);
+	std::wstring title_s = std::wstring(title);
+	title_s = title_s.substr(0, title_s.find('.', 0));
+	title_s += L".gps";
+	LPCWSTR title_sc = title_s.c_str();
+
+	HWND mdicli = FindWindowEx(gpss, NULL, L"MDIClient", NULL);
+	HWND source_wnd = FindWindowEx(mdicli, NULL, NULL, title_sc);
+	HWND source_richtext = FindWindowEx(source_wnd, NULL, L"RichEdit20A", NULL);
+	return source_richtext;
+}
+
 extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
 {
 	return (int)SendMessage(listview, LVM_GETITEMCOUNT, 0, 0);
