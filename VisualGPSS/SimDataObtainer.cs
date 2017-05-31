@@ -18,6 +18,15 @@ namespace VisualGPSS
         public static extern IntPtr FindSourceCodeRE(IntPtr gpss, IntPtr blocks);
 
         [DllImport("DataObtainerLib.dll", SetLastError = true)]
+        public static extern int GetSourceCodeLength(IntPtr richedit);
+
+        [DllImport("DataObtainerLib.dll", SetLastError = true)]
+        public static extern IntPtr GetSourceCode(IntPtr richedit, int length);
+
+        [DllImport("DataObtainerLib.dll", SetLastError = true)]
+        public static extern void ClearSourceCode(IntPtr str);
+
+        [DllImport("DataObtainerLib.dll", SetLastError = true)]
         public static extern int GetListviewCount(IntPtr listview);
 
         [DllImport("DataObtainerLib.dll", SetLastError = true)]
@@ -32,6 +41,9 @@ namespace VisualGPSS
         private static IntPtr sourceCodeHandle;
 
         private static int blocksCount;
+
+        private static int sourceCodeLength;
+        private static string[] sourceCode;
 
         public static GpssBlockData[] SimData { get; private set; }
 
@@ -73,6 +85,12 @@ namespace VisualGPSS
                 error = "Unknown error";
                 return false;
             }
+
+            sourceCodeLength = GetSourceCodeLength(sourceCodeHandle);
+            IntPtr sourceCodeptr = GetSourceCode(sourceCodeHandle, sourceCodeLength);
+            string str = Marshal.PtrToStringAuto(sourceCodeptr, sourceCodeLength);
+            sourceCode = str.Split(new string[] { "\r\n" }, StringSplitOptions.None);
+            ClearSourceCode(sourceCodeptr);
 
             return true;
         }

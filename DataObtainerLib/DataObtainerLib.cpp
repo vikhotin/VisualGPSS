@@ -41,9 +41,26 @@ extern "C" HWND __declspec(dllexport) __stdcall FindSourceCodeRE(HWND gpss, HWND
 	return source_richtext;
 }
 
+extern "C" int __declspec(dllexport) __stdcall GetSourceCodeLength(HWND richedit)
+{
+	return SendMessage(richedit, WM_GETTEXTLENGTH, 0, 0);
+}
+
 extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
 {
 	return (int)SendMessage(listview, LVM_GETITEMCOUNT, 0, 0);
+}
+
+extern "C" __declspec(dllexport) char*  __stdcall GetSourceCode(HWND richedit, int csLength)
+{
+	char* res = new char[csLength];
+	SendMessage(richedit, WM_GETTEXT, csLength, (LPARAM)res);
+	return res;
+}
+
+extern "C" void __declspec(dllexport) __stdcall ClearSourceCode(char* str)
+{
+	delete[] str;
 }
 
 extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(const HWND listview)
