@@ -26,9 +26,42 @@ extern "C" HWND __declspec(dllexport) __stdcall FindSimDataLV(HWND blocks)
 	return listview;
 }
 
+extern "C" HWND __declspec(dllexport) __stdcall FindSourceCodeRE(HWND gpss, HWND blocks)
+{
+	LPWSTR title = new WCHAR[100];
+	GetWindowText(blocks, title, 100);
+	std::wstring title_s = std::wstring(title);
+	title_s = title_s.substr(0, title_s.find('.', 0));
+	title_s += L".gps";
+	LPCWSTR title_sc = title_s.c_str();
+
+	HWND mdicli = FindWindowEx(gpss, NULL, L"MDIClient", NULL);
+	HWND source_wnd = FindWindowEx(mdicli, NULL, NULL, title_sc);
+	HWND source_richtext = FindWindowEx(source_wnd, NULL, L"RichEdit20A", NULL);
+	return source_richtext;
+}
+
+extern "C" int __declspec(dllexport) __stdcall GetSourceCodeLength(HWND richedit)
+{
+	return (int)SendMessage(richedit, WM_GETTEXTLENGTH, 0, 0);
+}
+
 extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
 {
 	return (int)SendMessage(listview, LVM_GETITEMCOUNT, 0, 0);
+}
+
+extern "C" __declspec(dllexport) wchar_t*  __stdcall GetSourceCode(HWND richedit, int csLength)
+{
+	csLength += 1; // null tereminated widestring
+	wchar_t* res = new wchar_t[csLength];
+	int sz = SendMessage(richedit, WM_GETTEXT, csLength, (LPARAM)res);
+	return res;
+}
+
+extern "C" void __declspec(dllexport) __stdcall ClearSourceCode(char* str)
+{
+	delete[] str;
 }
 
 extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(const HWND listview)
@@ -39,8 +72,8 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	int i;
 
 	LVITEM lvi, *_lvi;
-	wchar_t*** table = Alloc3DArrayWideChar(count, 4, STR_MAX_SIZE);
-	wchar_t *_loc, *_type, *_curcount, *_entcount;
+	wchar_t*** table = Alloc3DArrayWideChar(count, 5, STR_MAX_SIZE);
+	wchar_t *_loc, *_type, *_curcount, *_entcount, *_linenumber;
 
 	unsigned long pid;
 	HANDLE process;
@@ -54,6 +87,7 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	_type = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
 	_curcount = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
 	_entcount = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
+	_linenumber = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
 
 	lvi.cchTextMax = STR_MAX_SIZE;
 
@@ -78,10 +112,16 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 		WriteProcessMemory(process, _lvi, &lvi, sizeof(LVITEM), NULL);
 		SendMessage(listview, LVM_GETITEMTEXT, (WPARAM)i, (LPARAM)_lvi);
 
+		lvi.iSubItem = 5;
+		lvi.pszText = _linenumber;
+		WriteProcessMemory(process, _lvi, &lvi, sizeof(LVITEM), NULL);
+		SendMessage(listview, LVM_GETITEMTEXT, (WPARAM)i, (LPARAM)_lvi);
+
 		ReadProcessMemory(process, _loc, table[i][0], STR_MAX_SIZE, NULL);
 		ReadProcessMemory(process, _type, table[i][1], STR_MAX_SIZE, NULL);
 		ReadProcessMemory(process, _curcount, table[i][2], STR_MAX_SIZE, NULL);
 		ReadProcessMemory(process, _entcount, table[i][3], STR_MAX_SIZE, NULL);
+		ReadProcessMemory(process, _linenumber, table[i][4], STR_MAX_SIZE, NULL);
 	}
 
 	VirtualFreeEx(process, _lvi, 0, MEM_RELEASE);
@@ -89,6 +129,7 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	VirtualFreeEx(process, _type, 0, MEM_RELEASE);
 	VirtualFreeEx(process, _curcount, 0, MEM_RELEASE);
 	VirtualFreeEx(process, _entcount, 0, MEM_RELEASE);
+	VirtualFreeEx(process, _linenumber, 0, MEM_RELEASE);
 
 	return table;
 }

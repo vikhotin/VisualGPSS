@@ -52,17 +52,32 @@
             }
         }
 
-        public GpssBlockData()
+        public int SourceCodeLineNumber
         {
-            _data = new string[4];
+            get
+            {
+                return System.Convert.ToInt32(_data[4]);
+            }
+            set
+            {
+                _data[4] = value.ToString();
+            }
         }
 
-        public GpssBlockData(string tag, string type, int current, int entry) : this()
+        public string[] Parameters { get; set; }
+
+        public GpssBlockData()
+        {
+            _data = new string[5];
+        }
+
+        public GpssBlockData(string tag, string type, int current, int entry, int sloc) : this()
         {
             Tag = tag;
             Type = type;
             CurrentCount = current;
             EntryCount = entry;
+            SourceCodeLineNumber = sloc;
         }
     }
 }
