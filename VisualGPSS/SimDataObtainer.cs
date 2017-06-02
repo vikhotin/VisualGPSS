@@ -103,18 +103,37 @@ namespace VisualGPSS
             {
                 IntPtr rowptr = Marshal.ReadIntPtr(dataptr, i * elementSize);
                 SimData[i] = new GpssBlockData();
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < 5; j++)
                 {
                     IntPtr strptr = Marshal.ReadIntPtr(rowptr, j * elementSize);
                     string str = Marshal.PtrToStringAuto(strptr, 24); //.TrimEnd('\0');
                     str = str.Substring(0, str.IndexOf('\0'));
                     SimData[i]._data[j] = str;
                 }
+                SimData[i].Parameters = GetParameters(SimData[i].SourceCodeLineNumber);
             }
             ClearData(dataptr, blocksCount);
 
             return SimData;
         }
         // TODO: а может быть, брать только нужную информацию?
+
+        private static string[] GetParameters(int sourceCodeLineNumber)
+        {
+            string line = string.Copy(sourceCode[sourceCodeLineNumber - 1]);
+            int i = line.IndexOf(';');
+            line = line.Substring(0, i > 0 ? i : line.Length);
+            char[] delims = new char[] { '\t', ' ' };
+            line = line.Trim(delims);
+            string[] lexems = line.Split(delims);
+            if (lexems.Length > 1)
+            {
+                string pars = lexems[lexems.Length - 1];
+                return pars.Split(',');
+            }
+            else
+                return null;
+        }
+
     }
 }

@@ -72,8 +72,8 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	int i;
 
 	LVITEM lvi, *_lvi;
-	wchar_t*** table = Alloc3DArrayWideChar(count, 4, STR_MAX_SIZE);
-	wchar_t *_loc, *_type, *_curcount, *_entcount;
+	wchar_t*** table = Alloc3DArrayWideChar(count, 5, STR_MAX_SIZE);
+	wchar_t *_loc, *_type, *_curcount, *_entcount, *_linenumber;
 
 	unsigned long pid;
 	HANDLE process;
@@ -87,6 +87,7 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	_type = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
 	_curcount = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
 	_entcount = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
+	_linenumber = (wchar_t*)VirtualAllocEx(process, NULL, STR_MAX_SIZE, MEM_COMMIT, PAGE_READWRITE);
 
 	lvi.cchTextMax = STR_MAX_SIZE;
 
@@ -111,10 +112,16 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 		WriteProcessMemory(process, _lvi, &lvi, sizeof(LVITEM), NULL);
 		SendMessage(listview, LVM_GETITEMTEXT, (WPARAM)i, (LPARAM)_lvi);
 
+		lvi.iSubItem = 5;
+		lvi.pszText = _linenumber;
+		WriteProcessMemory(process, _lvi, &lvi, sizeof(LVITEM), NULL);
+		SendMessage(listview, LVM_GETITEMTEXT, (WPARAM)i, (LPARAM)_lvi);
+
 		ReadProcessMemory(process, _loc, table[i][0], STR_MAX_SIZE, NULL);
 		ReadProcessMemory(process, _type, table[i][1], STR_MAX_SIZE, NULL);
 		ReadProcessMemory(process, _curcount, table[i][2], STR_MAX_SIZE, NULL);
 		ReadProcessMemory(process, _entcount, table[i][3], STR_MAX_SIZE, NULL);
+		ReadProcessMemory(process, _linenumber, table[i][4], STR_MAX_SIZE, NULL);
 	}
 
 	VirtualFreeEx(process, _lvi, 0, MEM_RELEASE);
@@ -122,6 +129,7 @@ extern "C" __declspec(dllexport) wchar_t*** __stdcall GetSimulationDataArray(con
 	VirtualFreeEx(process, _type, 0, MEM_RELEASE);
 	VirtualFreeEx(process, _curcount, 0, MEM_RELEASE);
 	VirtualFreeEx(process, _entcount, 0, MEM_RELEASE);
+	VirtualFreeEx(process, _linenumber, 0, MEM_RELEASE);
 
 	return table;
 }
