@@ -12,6 +12,7 @@ namespace VisualGPSS
         public int TaskCount { get; set; }
 
         // public Point Location { get; set; }
+        public Point Center { get { return new Point(Location.X + Width / 2 + 1, Location.Y + Height / 2 + 1); } }
 
         public List<VisualBlock> Links { get; private set; }
 
@@ -20,11 +21,12 @@ namespace VisualGPSS
         public VisualBlock()
         {
             Links = new List<VisualBlock>();
-            TaskImage = new Bitmap(10, 10);
+            TaskImage = new Bitmap(15, 15);
             using (Graphics graphics = Graphics.FromImage(TaskImage))
             {
-                graphics.DrawImage(Properties.Resources.task, 0, 0, 10, 10);
+                graphics.DrawImage(Properties.Resources.task, 0, 0, 15, 15);
             }
+            //Cursor = Cursors.Hand;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -36,7 +38,7 @@ namespace VisualGPSS
         public virtual void Draw(Graphics g)
         {
             Pen pb = new Pen(Color.Blue, 2);
-            g.DrawEllipse(pb, Location.X - 3, Location.Y - 3, 6, 6);
+            g.DrawEllipse(pb, Center.X - 6, Center.Y - 6, 12, 12);
             DrawLinks(g);
             DrawTasks(g);
         }
@@ -48,7 +50,7 @@ namespace VisualGPSS
                 if (blockTo.Id - Id == 1)
                 {
                     Pen p = new Pen(Color.Black);
-                    g.DrawLine(p, Location, blockTo.Location);
+                    g.DrawLine(p, Center, blockTo.Center);
                 }
                 else
                 {
@@ -61,9 +63,9 @@ namespace VisualGPSS
         {
             if (TaskCount > 0)
             {
-                g.DrawImageUnscaled(TaskImage, new Point(Location.X + 20, Location.Y - 5));
+                g.DrawImageUnscaled(TaskImage, new Point(Center.X + 25, Center.Y - 5));
                 g.DrawString(TaskCount.ToString(), new Font(FontFamily.GenericSansSerif, 10),
-                             Brushes.Black, Location.X + 30, Location.Y - 10);
+                             Brushes.Black, Center.X + 40, Center.Y - 5);
             }
         }
     }
@@ -74,14 +76,14 @@ namespace VisualGPSS
         {
             Pen pb = new Pen(Color.Blue, 2);
             g.DrawPolygon(pb, new Point[] {
-                new Point(Location.X - 5, Location.Y - 10),
-                new Point(Location.X - 5, Location.Y - 5),
-                new Point(Location.X - 2, Location.Y - 5),
-                new Point(Location.X - 2, Location.Y),
-                new Point(Location.X + 2, Location.Y),
-                new Point(Location.X + 2, Location.Y - 5),
-                new Point(Location.X + 5, Location.Y - 5),
-                new Point(Location.X + 5, Location.Y - 10),
+                new Point(Center.X - 10, Center.Y - 20),
+                new Point(Center.X - 10, Center.Y - 10),
+                new Point(Center.X - 5, Center.Y - 10),
+                new Point(Center.X - 5, Center.Y),
+                new Point(Center.X + 5, Center.Y),
+                new Point(Center.X + 5, Center.Y - 10),
+                new Point(Center.X + 10, Center.Y - 10),
+                new Point(Center.X + 10, Center.Y - 20),
             });
             DrawLinks(g);
             DrawTasks(g);
@@ -93,15 +95,19 @@ namespace VisualGPSS
         public override void Draw(Graphics g)
         {
             Pen pb = new Pen(Color.Blue, 2);
-            g.DrawLine(pb, new Point(Location.X - 5, Location.Y - 10), 
-                           new Point(Location.X - 5, Location.Y - 5));
-            g.DrawLine(pb, new Point(Location.X + 5, Location.Y - 10),
-                           new Point(Location.X + 5, Location.Y - 5));
+            g.DrawLine(pb, new Point(Center.X - 10, Center.Y - 20), 
+                           new Point(Center.X - 10, Center.Y - 10));
+            g.DrawLine(pb, new Point(Center.X + 10, Center.Y - 20),
+                           new Point(Center.X + 10, Center.Y - 10));
             g.DrawRectangles(pb, new Rectangle[] {
-                new Rectangle(Location.X - 5, Location.Y - 5, 10, 5),
-                new Rectangle(Location.X - 5, Location.Y, 10, 5),
-                new Rectangle(Location.X - 5, Location.Y + 5, 10, 5),
+                new Rectangle(Center.X - 10, Center.Y - 10, 20, 10),
+                new Rectangle(Center.X - 10, Center.Y, 20, 10),
+                new Rectangle(Center.X - 10, Center.Y + 10, 20, 10),
             });
+            g.DrawString(Label,
+                         new Font(FontFamily.GenericSansSerif, 14, FontStyle.Regular),
+                         Brushes.Black,
+                         Center.X + 20, Center.Y - 25);
             DrawLinks(g);
             DrawTasks(g);
         }
@@ -113,10 +119,14 @@ namespace VisualGPSS
         {
             Pen pb = new Pen(Color.Blue, 2);
             g.DrawRectangles(pb, new Rectangle[] {
-                new Rectangle(Location.X - 6, Location.Y - 6, 10, 10),
-                new Rectangle(Location.X - 5, Location.Y - 5, 10, 10),
-                new Rectangle(Location.X - 4, Location.Y - 4, 10, 10),
+                new Rectangle(Center.X - 16, Center.Y - 16, 30, 30),
+                new Rectangle(Center.X - 15, Center.Y - 15, 30, 30),
+                new Rectangle(Center.X - 14, Center.Y - 14, 30, 30),
             });
+            g.DrawString(Label, 
+                         new Font(FontFamily.GenericSansSerif, 14, FontStyle.Regular),
+                         Brushes.Black,
+                         Center.X + 20, Center.Y - 25);
             DrawLinks(g);
             DrawTasks(g);
         }
@@ -128,11 +138,15 @@ namespace VisualGPSS
         {
             Pen pb = new Pen(Color.Blue, 2);
             g.DrawRectangles(pb, new Rectangle[] {
-                new Rectangle(Location.X - 10, Location.Y - 5, 5, 10),
-                new Rectangle(Location.X - 5, Location.Y - 5, 5, 10),
-                new Rectangle(Location.X    , Location.Y - 5, 5, 10),
-                new Rectangle(Location.X + 5, Location.Y - 5, 5, 10),
+                new Rectangle(Center.X - 20, Center.Y - 10, 10, 20),
+                new Rectangle(Center.X - 10, Center.Y - 10, 10, 20),
+                new Rectangle(Center.X     , Center.Y - 10, 10, 20),
+                new Rectangle(Center.X + 10, Center.Y - 10, 10, 20),
             });
+            g.DrawString(Label, 
+                         new Font(FontFamily.GenericSansSerif, 14, FontStyle.Regular),
+                         Brushes.Black,
+                         Center.X + 20, Center.Y - 25);
             DrawLinks(g);
             DrawTasks(g);
         }
@@ -143,8 +157,8 @@ namespace VisualGPSS
         public override void Draw(Graphics g)
         {
             Pen pb = new Pen(Color.Blue, 2);
-            g.DrawLine(pb, Location.X - 5, Location.Y - 5, Location.X + 5, Location.Y + 5);
-            g.DrawLine(pb, Location.X - 5, Location.Y + 5, Location.X + 5, Location.Y - 5);
+            g.DrawLine(pb, Center.X - 10, Center.Y - 10, Center.X + 10, Center.Y + 10);
+            g.DrawLine(pb, Center.X - 10, Center.Y + 10, Center.X + 10, Center.Y - 10);
         }
     }
 }
