@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using System.Drawing;
+using System;
+using System.Collections.Generic;
 
 namespace VisualGPSS
 {
@@ -14,7 +16,7 @@ namespace VisualGPSS
             }
             for (int i = 0; i < gpssBlocks.Length; i++)
             {
-                SetBlockParams(res, i);
+                SetBlockParams(gpssBlocks, res, i);
             }
 
             return res;
@@ -130,15 +132,75 @@ namespace VisualGPSS
             vis_block.TaskCount = gpss_block.CurrentCount;
         }
 
-        private static void SetBlockParams(VisualBlock[] res, int i)
+        private static void SetBlockParams(GpssBlockData[] gpssBlocks, VisualBlock[] res, int i)
         {
             res[i].Location = new Point(200, (i + 1) * 50);
             res[i].AutoSize = true;
             //res[i].Width = 40;//?
             //res[i].Height = 40;//?
-            if (i < res.Length - 1)
+            GpssBlockData block = gpssBlocks[i];
+            switch (block.Type)
             {
-                res[i].Links.Add(res[i + 1]);
+                case "GATE":
+                case "LOOP":
+                    {
+                        int blockto = gpssBlocks
+                                      .Select((s, idx) => new { idx, s })
+                                      .Where(t => block.Parameters[1].ToUpper() == t.s.Tag.ToUpper())
+                                      .Select(t => t.idx)
+                                      .First();
+                        res[i].Links.Add(res[blockto]);
+
+                        if (i < res.Length - 1)
+                        {
+                            res[i].Links.Add(res[i + 1]);
+                        }
+                    }
+                    break;
+                case "TEST":
+                    {
+                        int blockto = gpssBlocks
+                                      .Select((s, idx) => new { idx, s })
+                                      .Where(t => block.Parameters[2].ToUpper() == t.s.Tag.ToUpper())
+                                      .Select(t => t.idx)
+                                      .First();
+                        res[i].Links.Add(res[blockto]);
+
+                        if (i < res.Length - 1)
+                        {
+                            res[i].Links.Add(res[i + 1]);
+                        }
+                    }
+                    break;
+                case "TRANSFER":
+                    {
+                        List<string> pars = new List<string>();
+                        if (!string.IsNullOrEmpty(block.Parameters[1]))
+                            pars.Add(block.Parameters[1].ToUpper());
+                        if (block.Parameters.Length > 2 && !string.IsNullOrEmpty(block.Parameters[2]))
+                            pars.Add(block.Parameters[2].ToUpper());
+                        int[] blockto = gpssBlocks
+                                        .Select((s, idx) => new { idx, s })
+                                        .Where(t => pars.Contains(t.s.Tag.ToUpper()))
+                                        .Select(t => t.idx)
+                                        .ToArray();
+                        foreach (int to in blockto)
+                            res[i].Links.Add(res[to]);
+
+                        if (i < res.Length - 1)
+                        {
+                            res[i].Links.Add(res[i + 1]);
+                        }
+                    }
+                    break;
+                case "TERMINATE":
+                    break;
+                default:
+                    if (i < res.Length - 1)
+                    {
+                        res[i].Links.Add(res[i + 1]);
+                    }
+                    break;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 
 namespace VisualGPSS
 {
@@ -43,6 +44,8 @@ namespace VisualGPSS
             DrawTasks(g);
         }
 
+        private static int Shift = 25;
+
         protected void DrawLinks(Graphics g)
         {
             foreach (VisualBlock blockTo in Links)
@@ -54,7 +57,17 @@ namespace VisualGPSS
                 }
                 else
                 {
-                    // TODO:
+                    int shift = Shift + Id * 3;
+                    Pen p = new Pen(Color.Black);
+
+                    Point interPoint1 = new Point(Center.X - shift, Center.Y);
+                    Point interPoint2 = new Point(blockTo.Center.X - shift, blockTo.Center.Y - 5);
+                    Point interPoint3 = new Point(blockTo.Center.X, blockTo.Center.Y - 5);
+
+                    g.DrawLine(p, Center, interPoint1);
+                    g.DrawLine(p, interPoint1, interPoint2);
+                    p.CustomEndCap = new AdjustableArrowCap(5, 7);
+                    g.DrawLine(p, interPoint2, interPoint3);
                 }
             }
         }
@@ -76,14 +89,14 @@ namespace VisualGPSS
         {
             Pen pb = new Pen(Color.Blue, 2);
             g.DrawPolygon(pb, new Point[] {
-                new Point(Center.X - 10, Center.Y - 20),
-                new Point(Center.X - 10, Center.Y - 10),
-                new Point(Center.X - 5, Center.Y - 10),
-                new Point(Center.X - 5, Center.Y),
-                new Point(Center.X + 5, Center.Y),
-                new Point(Center.X + 5, Center.Y - 10),
-                new Point(Center.X + 10, Center.Y - 10),
-                new Point(Center.X + 10, Center.Y - 20),
+                new Point(Center.X - 15, Center.Y - 25),
+                new Point(Center.X - 15, Center.Y - 15),
+                new Point(Center.X - 10, Center.Y - 15),
+                new Point(Center.X - 10, Center.Y),
+                new Point(Center.X + 10, Center.Y),
+                new Point(Center.X + 10, Center.Y - 15),
+                new Point(Center.X + 15, Center.Y - 15),
+                new Point(Center.X + 15, Center.Y - 25),
             });
             DrawLinks(g);
             DrawTasks(g);
