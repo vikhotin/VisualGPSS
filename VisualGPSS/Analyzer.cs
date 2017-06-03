@@ -12,7 +12,7 @@ namespace VisualGPSS
             MWNumericArray Y = new MWNumericArray(y);
 
             Mancovan mancova = new Mancovan();
-            MWArray res = mancova.mancovan(Y, Groups);
+            MWArray[] res = mancova.mancovan(2, Y, Groups);
         }
     }
 }
