@@ -40,7 +40,7 @@ namespace VisualGPSS
                     for (int i = 0; i < dataLength; i++)
                     {
                         s = reader.ReadLine();
-                        double[] nums = s.Split(' ')
+                        double[] nums = s.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                                          .Select(t => double.Parse(t, CultureInfo.InvariantCulture))
                                          .ToArray();
                         for (int j = 0; j < IVNumber; j++)
