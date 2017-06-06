@@ -21,18 +21,24 @@ namespace VisualGPSS
 
         private void btnAnalyze_Click(object sender, EventArgs e)
         {
+            Cursor = Cursors.WaitCursor;
+
             double[,] groups;
             double[,] Y;
             try
             {
+                int dataLength;
+                int IVNumber;
+                int DVNumber;
+
                 using (StreamReader reader = new StreamReader(edtFilename.Text))
                 {
                     string s = reader.ReadLine();
                     int[] ints = s.Split(' ').Select(t => Convert.ToInt32(t)).ToArray();
 
-                    int dataLength = ints[0];
-                    int IVNumber = ints[1];
-                    int DVNumber = ints[2];
+                    dataLength = ints[0];
+                    IVNumber = ints[1];
+                    DVNumber = ints[2];
 
                     groups = new double[dataLength, IVNumber];
                     Y = new double[dataLength, DVNumber];
@@ -54,11 +60,27 @@ namespace VisualGPSS
                     }
                 }
 
-                Analyzer.Anova(groups, Y);
+                double[] T, p;
+
+                Analyzer.Anova(groups, Y, out T, out p);
+
+                rtbResult.Clear();
+                for (int i = 0; i < IVNumber; i++)
+                {
+                    rtbResult.AppendText(string.Format("Factor {0} T={1:0.00000} p={2:0.00000}\n", i, T[i], p[i]));
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                // MessageBox.Show(ex.Message);
+                rtbResult.Clear();
+                rtbResult.SelectionColor = System.Drawing.Color.Red;
+                rtbResult.AppendText(ex.Message);
+                rtbResult.SelectionColor = System.Drawing.Color.Black;
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
             }
         }
     }
