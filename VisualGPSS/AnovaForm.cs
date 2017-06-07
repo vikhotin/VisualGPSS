@@ -67,7 +67,7 @@ namespace VisualGPSS
                 rtbResult.Clear();
                 for (int i = 0; i < IVNumber; i++)
                 {
-                    rtbResult.AppendText(string.Format("Factor {0} T={1:0.00000} p={2:0.00000}\n", i, T[i], p[i]));
+                    rtbResult.AppendText(string.Format("Factor {0} T={1:0.00000} p={2:0.00000}\n", i + 1, T[i], p[i]));
                 }
             }
             catch (Exception ex)
