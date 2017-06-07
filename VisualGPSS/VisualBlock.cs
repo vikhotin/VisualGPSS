@@ -28,6 +28,7 @@ namespace VisualGPSS
                 graphics.DrawImage(Properties.Resources.task, 0, 0, 15, 15);
             }
             //Cursor = Cursors.Hand;
+            Location = new Point(0, 0);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -45,9 +46,11 @@ namespace VisualGPSS
         }
 
         private static int Shift = 25;
+        private RandColor rand;
 
         protected void DrawLinks(Graphics g)
         {
+            RandColor rand = new RandColor(Id);
             foreach (VisualBlock blockTo in Links)
             {
                 if (blockTo.Id - Id == 1)
@@ -58,9 +61,14 @@ namespace VisualGPSS
                 else
                 {
                     int shift = Shift + Id * 3;
-                    Pen p = new Pen(Color.Black);
+                    Pen p = new Pen(rand.GetColor());
 
-                    Point interPoint1 = new Point(Center.X - shift, Center.Y);
+                    Point interPoint1;
+
+                    if (blockTo.Left == Left)
+                        interPoint1 = new Point(Center.X - shift, Center.Y);
+                    else
+                        interPoint1 = new Point(Center.X + shift, Center.Y);
                     Point interPoint2 = new Point(blockTo.Center.X - shift, blockTo.Center.Y - 5);
                     Point interPoint3 = new Point(blockTo.Center.X, blockTo.Center.Y - 5);
 
@@ -172,6 +180,49 @@ namespace VisualGPSS
             Pen pb = new Pen(Color.Blue, 2);
             g.DrawLine(pb, Center.X - 10, Center.Y - 10, Center.X + 10, Center.Y + 10);
             g.DrawLine(pb, Center.X - 10, Center.Y + 10, Center.X + 10, Center.Y - 10);
+        }
+    }
+
+}
+
+namespace VisualGPSS
+{
+    class RandColor
+    {
+        private System.Random rand;
+        private static Color[] colors = new Color[]
+        {
+            Color.SandyBrown,
+            Color.Red,
+            Color.Blue,
+            Color.Green,
+            Color.DarkBlue,
+            Color.DarkCyan,
+            Color.DarkGoldenrod,
+            Color.DarkGray,
+            Color.DarkGreen,
+            Color.DarkKhaki,
+            Color.DarkMagenta,
+            Color.DarkOliveGreen,
+            Color.DarkOrange,
+            Color.DarkOrchid,
+            Color.DarkRed,
+            Color.DarkSalmon,
+            Color.DarkSeaGreen,
+            Color.DarkSlateBlue,
+            Color.DarkSlateGray,
+            Color.DarkTurquoise,
+            Color.DarkViolet,
+            Color.DeepPink,
+            Color.DeepSkyBlue,
+        };
+        public Color GetColor()
+        {
+            return colors[rand.Next(colors.Length)];
+        }
+        public RandColor(int seed)
+        {
+            rand = new System.Random(seed);
         }
     }
 }

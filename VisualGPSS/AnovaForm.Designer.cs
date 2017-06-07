@@ -40,12 +40,12 @@
             // 
             this.edtFilename.Location = new System.Drawing.Point(12, 35);
             this.edtFilename.Name = "edtFilename";
-            this.edtFilename.Size = new System.Drawing.Size(179, 20);
+            this.edtFilename.Size = new System.Drawing.Size(274, 20);
             this.edtFilename.TabIndex = 0;
             // 
             // btnFindFile
             // 
-            this.btnFindFile.Location = new System.Drawing.Point(198, 35);
+            this.btnFindFile.Location = new System.Drawing.Point(292, 34);
             this.btnFindFile.Name = "btnFindFile";
             this.btnFindFile.Size = new System.Drawing.Size(74, 20);
             this.btnFindFile.TabIndex = 1;
@@ -64,7 +64,7 @@
             // 
             // btnAnalyze
             // 
-            this.btnAnalyze.Location = new System.Drawing.Point(116, 70);
+            this.btnAnalyze.Location = new System.Drawing.Point(145, 71);
             this.btnAnalyze.Name = "btnAnalyze";
             this.btnAnalyze.Size = new System.Drawing.Size(75, 23);
             this.btnAnalyze.TabIndex = 3;
@@ -76,7 +76,7 @@
             // 
             this.rtbResult.Location = new System.Drawing.Point(12, 114);
             this.rtbResult.Name = "rtbResult";
-            this.rtbResult.Size = new System.Drawing.Size(260, 111);
+            this.rtbResult.Size = new System.Drawing.Size(354, 111);
             this.rtbResult.TabIndex = 4;
             this.rtbResult.Text = "";
             // 
@@ -84,7 +84,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 244);
+            this.ClientSize = new System.Drawing.Size(378, 244);
             this.Controls.Add(this.rtbResult);
             this.Controls.Add(this.btnAnalyze);
             this.Controls.Add(this.label1);

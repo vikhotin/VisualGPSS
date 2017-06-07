@@ -12,6 +12,7 @@ namespace VisualGPSS
         public ModelForm()
         {
             InitializeComponent();
+            HorizontalScroll.Enabled = true;
             Renderer = new Renderer(model);
             timer1.Tick += new EventHandler(RunFrame);
             StopTimer();
