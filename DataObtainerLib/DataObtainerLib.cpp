@@ -53,7 +53,7 @@ extern "C" int __declspec(dllexport) __stdcall GetListviewCount(HWND listview)
 
 extern "C" __declspec(dllexport) wchar_t*  __stdcall GetSourceCode(HWND richedit, int csLength)
 {
-	csLength += 1; // null tereminated widestring
+	csLength += 1; // null terminated widestring
 	wchar_t* res = new wchar_t[csLength];
 	int sz = SendMessage(richedit, WM_GETTEXT, csLength, (LPARAM)res);
 	return res;
