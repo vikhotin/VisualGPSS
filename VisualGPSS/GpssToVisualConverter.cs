@@ -63,14 +63,7 @@ namespace VisualGPSS
                                        .Select(t => t.idx)
                                        .DefaultIfEmpty(0)
                                        .Min();
-                        if (idxSeize < i && i < idxRelease)
-                        {
-                            res[i] = new FacilityBlock();
-                            res[i].Id = i;
-                            res[i].Label = gpssBlocks[idxSeize].Parameters[0];
-                            res[i].TaskCount = block.CurrentCount;
-                            break;
-                        }
+
                         int idxPreempt = gpssBlocks
                                        .Select((s, idx) => new { idx, s })
                                        .Where(t => t.idx < i)
@@ -85,14 +78,7 @@ namespace VisualGPSS
                                        .Select(t => t.idx)
                                        .DefaultIfEmpty(0)
                                        .Min();
-                        if (idxPreempt < i && i < idxReturn)
-                        {
-                            res[i] = new FacilityBlock();
-                            res[i].Id = i;
-                            res[i].Label = gpssBlocks[idxPreempt].Parameters[0];
-                            res[i].TaskCount = block.CurrentCount;
-                            break;
-                        }
+
                         int idxEnter = gpssBlocks
                                        .Select((s, idx) => new { idx, s })
                                        .Where(t => t.idx < i)
@@ -107,6 +93,25 @@ namespace VisualGPSS
                                        .Select(t => t.idx)
                                        .DefaultIfEmpty(0)
                                        .Min();
+
+                        if (idxSeize < i && i < idxRelease && idxRelease - idxSeize < 10) // magic condition, may break
+                        {
+                            res[i] = new FacilityBlock();
+                            res[i].Id = i;
+                            res[i].Label = gpssBlocks[idxSeize].Parameters[0];
+                            res[i].TaskCount = block.CurrentCount;
+                            break;
+                        }
+
+                        if (idxPreempt < i && i < idxReturn)
+                        {
+                            res[i] = new FacilityBlock();
+                            res[i].Id = i;
+                            res[i].Label = gpssBlocks[idxPreempt].Parameters[0];
+                            res[i].TaskCount = block.CurrentCount;
+                            break;
+                        }
+
                         if (idxEnter < i && i < idxLeave)
                         {
                             res[i] = new StorageBlock();
@@ -134,10 +139,11 @@ namespace VisualGPSS
 
         private static void SetBlockParams(GpssBlockData[] gpssBlocks, VisualBlock[] res, int i)
         {
-            res[i].Location = new Point(200, (i + 1) * 50);
+            if (i == 0)
+                for (int l = 0; l < res.Length; l++)
+                    res[l].Top = (l + 1) * 50;
+            res[i].Left += 200;
             res[i].AutoSize = true;
-            //res[i].Width = 40;//?
-            //res[i].Height = 40;//?
             GpssBlockData block = gpssBlocks[i];
             switch (block.Type)
             {
@@ -155,6 +161,19 @@ namespace VisualGPSS
                         {
                             res[i].Links.Add(res[i + 1]);
                         }
+
+                        if (gpssBlocks[blockto].Type == "GATE" ||
+                            gpssBlocks[blockto].Type == "LOOP")
+                        {
+                            if (res[blockto].Top < res[i].Top)
+                                res[blockto].Location = new Point(res[blockto].Location.X + 150,
+                                                              res[i].Location.Y);
+                            for (int l = blockto + 1; l < res.Length; l++)
+                            {
+                                res[l].Location = res[blockto].Location;
+                                res[l].Top += (l - blockto) * 50;
+                            }
+                        }
                     }
                     break;
                 case "TEST":
@@ -169,6 +188,20 @@ namespace VisualGPSS
                         if (i < res.Length - 1)
                         {
                             res[i].Links.Add(res[i + 1]);
+                        }
+
+                        if (gpssBlocks[blockto].Type == "TEST")
+                        {
+                            if (res[blockto].Top > res[i].Top)
+                            {
+                                res[blockto].Location = new Point(res[blockto].Location.X + 150,
+                                                                  res[i].Location.Y);
+                                for (int l = blockto + 1; l < res.Length; l++)
+                                {
+                                    res[l].Location = res[blockto].Location;
+                                    res[l].Top += (l - blockto) * 50;
+                                }
+                            }
                         }
                     }
                     break;
@@ -186,11 +219,12 @@ namespace VisualGPSS
                                         .ToArray();
                         foreach (int to in blockto)
                             res[i].Links.Add(res[to]);
-
+                        /*
                         if (i < res.Length - 1)
                         {
                             res[i].Links.Add(res[i + 1]);
                         }
+                        */
                     }
                     break;
                 case "TERMINATE":

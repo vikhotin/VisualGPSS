@@ -41,10 +41,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(424, 401);
+            this.ClientSize = new System.Drawing.Size(740, 474);
             this.DoubleBuffered = true;
             this.Name = "ModelForm";
-            this.Text = "modelForm";
+            this.Text = "Модель";
             this.ResizeBegin += new System.EventHandler(this.ModelForm_ResizeBegin);
             this.ResizeEnd += new System.EventHandler(this.ModelForm_ResizeEnd);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ModelForm_Paint);
