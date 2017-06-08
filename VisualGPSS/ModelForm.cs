@@ -35,16 +35,24 @@ namespace VisualGPSS
 
         private void RunFrame(object sender, EventArgs e)
         {
-            GpssBlockData[] gpssBlocks = SimDataObtainer.GetSimData();
-            if (model.blocks != null)
-                GpssToVisualConverter.UpdateStats(model.blocks, gpssBlocks);
-            else
-                model.blocks = GpssToVisualConverter.Convert(gpssBlocks);
-            foreach (VisualBlock block in model.blocks)
+            try
             {
-                Controls.Add(block);
+                GpssBlockData[] gpssBlocks = SimDataObtainer.GetSimData();
+                if (model.blocks != null)
+                    GpssToVisualConverter.UpdateStats(model.blocks, gpssBlocks);
+                else
+                    model.blocks = GpssToVisualConverter.Convert(gpssBlocks);
+                foreach (VisualBlock block in model.blocks)
+                {
+                    Controls.Add(block);
+                }
+                Invalidate();
             }
-            Invalidate();
+            catch (Exception)
+            {
+                StopTimer();
+                Close();
+            }
         }
 
         private void ModelForm_ResizeBegin(object sender, EventArgs e)

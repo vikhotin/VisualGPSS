@@ -122,11 +122,46 @@ namespace VisualGPSS
                            new Point(Center.X - 10, Center.Y - 10));
             g.DrawLine(pb, new Point(Center.X + 10, Center.Y - 20),
                            new Point(Center.X + 10, Center.Y - 10));
-            g.DrawRectangles(pb, new Rectangle[] {
-                new Rectangle(Center.X - 10, Center.Y - 10, 20, 10),
-                new Rectangle(Center.X - 10, Center.Y, 20, 10),
-                new Rectangle(Center.X - 10, Center.Y + 10, 20, 10),
-            });
+            Brush b;
+            Rectangle r1 = new Rectangle(Center.X - 10, Center.Y - 10, 20, 10);
+            g.DrawRectangle(pb, r1);
+            if (TaskCount > 10)
+            {
+                b = Brushes.Red;
+                g.FillRectangle(b, r1);
+            }
+
+            Rectangle r2 = new Rectangle(Center.X - 10, Center.Y, 20, 10);
+            g.DrawRectangle(pb, r2);
+            if (TaskCount > 10)
+            {
+                b = Brushes.Red;
+                g.FillRectangle(b, r2);
+            }
+            else if (TaskCount > 5)
+            {
+                b = Brushes.Yellow;
+                g.FillRectangle(b, r2);
+            }
+
+            Rectangle r3 = new Rectangle(Center.X - 10, Center.Y + 10, 20, 10);
+            g.DrawRectangle(pb, r3);
+            if (TaskCount > 10)
+            {
+                b = Brushes.Red;
+                g.FillRectangle(b, r3);
+            }
+            else if (TaskCount > 5)
+            {
+                b = Brushes.Yellow;
+                g.FillRectangle(b, r3);
+            }
+            else if (TaskCount > 0)
+            {
+                b = Brushes.Green;
+                g.FillRectangle(b, r3);
+            }
+
             g.DrawString(Label,
                          new Font(FontFamily.GenericSansSerif, 14, FontStyle.Regular),
                          Brushes.Black,
