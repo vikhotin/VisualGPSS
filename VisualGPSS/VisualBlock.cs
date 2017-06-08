@@ -61,6 +61,8 @@ namespace VisualGPSS
                 else
                 {
                     int shift = Shift + Id * 3;
+                    if (shift > 50)
+                        shift %= 50;
                     Pen p = new Pen(rand.GetColor());
 
                     Point interPoint1;
